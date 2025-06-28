@@ -1,6 +1,9 @@
 import pygame
 import random
 import sys
+import os
+os.environ['SDL_AUDIODRIVER'] = 'dummy'  # Disable sound
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'  # Hide welcome message
 
 # Initialize pygame
 pygame.init()
@@ -31,7 +34,8 @@ class Snake:
         self.positions = [(GRID_WIDTH // 2, GRID_HEIGHT // 2)]
         self.direction = RIGHT
         self.grow = False
-        
+        self.frame_count = 0 
+
     def move(self):
         head_x, head_y = self.positions[0]
         new_head = (head_x + self.direction[0], head_y + self.direction[1])
@@ -104,8 +108,10 @@ class Game:
         pygame.display.set_caption("Snake Game")
         self.clock = pygame.time.Clock()
         self.font = pygame.font.Font(None, 36)
+        self.frame_count = 0
         self.reset_game()
-    
+        
+
     def reset_game(self):
         self.snake = Snake()
         self.food = Food()
@@ -137,6 +143,9 @@ class Game:
                         self.snake.change_direction(RIGHT)
                     elif event.key == pygame.K_ESCAPE:
                         return False
+                    elif event.key == pygame.K_s:
+                        pygame.image.save(self.screen, f"screenshot_manual_{self.frame_count}.png")
+                        print(f"Screenshot saved as screenshot_manual_{self.frame_count}.png")
         return True
     
     def update(self):
@@ -172,8 +181,12 @@ class Game:
             
             self.screen.blit(game_over_text, game_over_rect)
             self.screen.blit(restart_text, restart_rect)
+        # Add screenshot capture HERE (before display.flip)
+        if self.frame_count % 30 == 0:  # Capture every 30 frames
+            pygame.image.save(self.screen, f"screenshot_{self.frame_count}.png")
         
         pygame.display.flip()
+        self.frame_count += 1  # Add this to __init__ too 
     
     def run(self):
         running = True
