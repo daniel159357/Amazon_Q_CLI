@@ -1,0 +1,10 @@
+{
+  "name": "Python with Pygame",
+  "image": "mcr.microsoft.com/devcontainers/python:3.12",
+  "features": {
+    "ghcr.io/devcontainers/features/x11:1": {}
+  },
+  "containerEnv": {
+    "DISPLAY": ":0"
+  }
+}
